@@ -2,12 +2,12 @@
 
 # NovaCortex OS
 
-### An Open-Source AI-Native Operating System Built From Scratch
+### A Complete Open-Source AI-Native Operating System Built From Scratch
 
-NovaCortex OS is a complete operating system in which an integrated system AI understands the OS, operates it on behalf of the user, explains its actions, and helps maintain the full system over time.
+NovaCortex OS is an operating system in which a project-owned system AI understands the machine, turns user goals into safe actions, explains its work, and helps maintain the OS itself.
 
 ![Status](https://img.shields.io/badge/status-planning-yellow)
-![Type](https://img.shields.io/badge/type-AI--Native_OS-purple)
+![AI](https://img.shields.io/badge/AI-built%20from%20scratch-purple)
 ![Kernel](https://img.shields.io/badge/kernel-NovaKernel-blue)
 ![Architecture](https://img.shields.io/badge/architecture-x86__64-lightgrey)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -16,25 +16,59 @@ NovaCortex OS is a complete operating system in which an integrated system AI un
 
 ---
 
-## Overview
+## Project Status
 
-NovaCortex OS is not a conventional operating system with a chatbot added on top. It is being designed as an **AI-native operating system**, where the system AI is a permanent part of the operating environment.
+NovaCortex OS is in the research, specification, and architecture phase. It is not yet ready for production use.
 
-The AI observes the current system state, understands available capabilities, converts user goals into safe actions, coordinates operating system services, verifies results, and communicates what it is doing in clear language.
+The project is intentionally ambitious: both the operating system and its central AI are being developed as original, open-source systems. Early releases will focus on verifiable foundations rather than broad autonomy.
 
-The long-term goal is to build an operating system where users do not need to manually navigate every application, setting, file, process, or diagnostic tool. They can state what they want to achieve, and the OS AI can plan and perform the required work through controlled system interfaces.
+---
 
-> NovaCortex OS provides the complete operating system. Its kernel is developed separately as NovaKernel.
+## Vision
+
+NovaCortex OS is not a conventional operating system with a chatbot attached to it. The system AI is a first-class part of the operating environment.
+
+A user should be able to describe an outcome, such as preparing a development workspace, diagnosing a slow system, organizing files, or configuring an application. The AI will inspect structured system state, create a constrained plan, request authorization when needed, execute actions through controlled OS interfaces, verify the result, and explain what happened.
+
+The long-term goal is an operating system that can:
+
+- Understand its services, applications, files, processes, devices, policies, and codebase
+- Communicate through text, voice, and graphical interfaces
+- Perform multi-step system work for the user
+- Explain its current actions, decisions, uncertainty, failures, and results
+- Diagnose problems and coordinate safe recovery
+- Help maintain the NovaCortex OS codebase through reviewable changes
+- Remain usable in a deterministic safe mode when the AI is unavailable
+
+---
+
+## Foundational Rule: The AI Is Built From Scratch
+
+NovaCortex OS will not use an existing AI product as its system intelligence.
+
+The project's AI commitment means:
+
+- No OpenAI, Anthropic, Google, or other cloud AI API will provide the OS intelligence
+- No pretrained language model, foundation model, or externally trained checkpoint will be used as the core or fallback intelligence
+- Model architecture and initial weights will be owned and produced by this project
+- Language and system representations, tokenization, training pipelines, memory, reasoning, planning, decision-making, and conversation systems will be designed and developed within the project
+- Training data must have documented provenance, licensing, filtering, and evaluation
+- Model behaviour must be reproducible, inspectable, testable, and replaceable
+- AI research decisions and limitations will be documented openly
+
+General-purpose compilers, programming-language runtimes, system libraries, testing tools, and other non-AI infrastructure may be used when approved and documented. They are implementation tools, not a substitute for the project-owned AI.
+
+This rule is an architectural boundary, not a marketing claim. A feature that depends on a proprietary model, remote inference service, or pretrained checkpoint is not part of the NovaCortex OS core.
 
 ---
 
 ## Kernel: NovaKernel
 
-NovaCortex OS uses [NovaKernel](https://github.com/dev-collaboration-hub/NovaKernel) as its operating system kernel.
+NovaCortex OS uses [NovaKernel](https://github.com/dev-collaboration-hub/NovaKernel) as its kernel.
 
-NovaKernel is a separate, from-scratch, modular, AI-aware kernel responsible for low-level and safety-critical operations.
+NovaKernel is a separate, from-scratch, modular, AI-aware kernel. It provides deterministic, low-level mechanisms and enforces safety boundaries. The kernel does not contain the central AI.
 
-### Developed in NovaKernel
+### NovaKernel Owns
 
 - Boot and hardware initialization
 - Interrupt and exception handling
@@ -42,119 +76,81 @@ NovaKernel is a separate, from-scratch, modular, AI-aware kernel responsible for
 - Processes, threads, scheduling, and context switching
 - System calls and privilege separation
 - Kernel-level device drivers
-- Filesystem mechanisms
-- Networking mechanisms
+- Filesystem and networking mechanisms
 - Security enforcement
-- Structured kernel telemetry
-- AI-aware kernel control interfaces
-- Audit, recovery, and safe fallback mechanisms
+- Structured kernel events and telemetry
+- Validated interfaces for AI-requested operations
+- Kernel recovery and safe fallback mechanisms
 
-### Developed in NovaCortex OS
+### NovaCortex OS Owns
 
-- Complete user-space operating environment
-- System AI runtime
-- Conversational interface
-- Goal understanding and task planning
-- Safe action execution engine
-- System services and service coordination
-- Desktop environment and system shell
-- File, application, process, device, and settings management
+- The complete user-space operating environment
+- The from-scratch AI architecture and runtime
+- Data preparation, model training, evaluation, and versioning
+- System understanding, memory, reasoning, and planning
+- Conversation and action explanation
+- Permission, policy, audit, verification, and rollback coordination
+- System services, desktop, shell, and applications
 - Diagnostics and recovery orchestration
-- OS codebase understanding and maintenance
+- Codebase understanding and maintenance assistance
 - NovaKernel integration
-- Bootable OS image assembly
-- End-to-end system testing and release tooling
+- Bootable image assembly and end-to-end releases
 
-Kernel source code is **not developed or duplicated in this repository**. NovaCortex OS consumes a tested NovaKernel release or pinned commit and integrates it into the complete operating system image.
+Kernel source code is not developed or duplicated in this repository. NovaCortex OS consumes a tested NovaKernel release or pinned commit through a documented compatibility contract.
 
----
-
-## Core Vision
-
-In a traditional operating system, the user directly controls individual tools and manually decides each step.
-
-In NovaCortex OS, the user can provide a goal and the OS AI can:
-
-1. Understand the requested outcome.
-2. Inspect the current system state.
-3. Identify the required system capabilities.
-4. Build a safe execution plan.
-5. Request authorization when required.
-6. Coordinate applications and system services.
-7. Execute and verify each action.
-8. Explain what it did and report the final result.
-
-The AI is not only a voice assistant. It is the operating system's intelligent coordination, explanation, diagnostics, and maintenance layer.
+> The NovaCortex AI understands, plans, coordinates, and explains. NovaKernel validates and executes low-level operations.
 
 ---
 
-## System AI Capabilities
+## How the System AI Works
 
-### Conversational System Control
+The AI operates on structured state and declared capabilities instead of receiving unrestricted machine access.
 
-The AI communicates through text and voice, understands system-related requests, asks for missing information when necessary, and reports progress while performing work.
+1. **Observe** — Read relevant, permission-filtered system state.
+2. **Understand** — Interpret the goal, context, constraints, and uncertainty.
+3. **Plan** — Produce an inspectable task graph with preconditions and expected results.
+4. **Authorize** — Apply capability, policy, risk, and user-approval checks.
+5. **Execute** — Call NovaCortex OS services and validated NovaKernel interfaces.
+6. **Verify** — Compare real outcomes with expected postconditions.
+7. **Explain** — Report actions, evidence, failures, recovery, and final state.
 
-Example goals:
-
-- “Organize my project files and remove duplicates.”
-- “Find out why the system is slow and safely fix it.”
-- “Install this application and configure it for my workflow.”
-- “Prepare my development environment for this repository.”
-- “Show me which process is consuming memory and explain why.”
-
-### Operating System Understanding
-
-The AI maintains a structured model of:
-
-- Running processes and services
-- Files, directories, and storage
-- Installed applications and system capabilities
-- Devices and hardware resources
-- Network state and connections
-- Permissions and security policies
-- System events, errors, and health information
-- NovaCortex OS modules and their relationships
-- NovaKernel interfaces exposed to user space
-
-This system model allows the AI to reason about the OS instead of blindly executing commands.
-
-### Autonomous Task Execution
-
-The AI can convert a high-level goal into smaller system operations, order them correctly, execute permitted actions, detect failures, revise the plan, and verify whether the goal was achieved.
-
-### Action Explanation
-
-The AI communicates:
-
-- What it is doing
-- Why the action is needed
-- Which system component is involved
-- Whether the action changes user data or system state
-- What result was produced
-- What failed and what it will try next
-
-### System Diagnostics and Recovery
-
-The AI can combine kernel telemetry, service state, logs, resource usage, and configuration data to diagnose problems. Corrective actions are executed only through validated system interfaces.
-
-### Codebase Maintenance
-
-The AI is designed to understand the NovaCortex OS codebase and assist with its long-term maintenance by:
-
-- Mapping modules, interfaces, dependencies, and ownership
-- Detecting broken contracts and incompatible changes
-- Locating likely causes of failures
-- Proposing code and configuration changes
-- Running builds and tests in isolated environments
-- Verifying compatibility with NovaKernel
-- Preparing reviewable maintenance changes
-- Preserving version history and rollback information
-
-The AI cannot silently replace trusted system components. Core updates require validation, testing, authorization, and a recoverable deployment path.
+The AI cannot declare success without verification, and its output is never treated as kernel authority.
 
 ---
 
-## Architecture
+## Core AI Subsystems
+
+### Learning Core
+
+Project-owned model architecture, parameter initialization, optimization, training, checkpointing, and inference.
+
+### System Understanding
+
+A structured representation of processes, services, files, applications, devices, resources, policies, events, source modules, and kernel interfaces.
+
+### Memory and Context
+
+Permission-aware short-term and persistent memory with provenance, retention, invalidation, and user-control rules.
+
+### Goal Understanding and Planning
+
+Conversion of user requests into constrained goals, task graphs, dependencies, preconditions, postconditions, and recovery paths.
+
+### Action Engine
+
+Execution of typed system actions through capability-controlled services, with cancellation, audit, verification, and rollback.
+
+### Conversation and Explanation
+
+Text and voice interaction, clarification, confirmation, progress narration, uncertainty reporting, and evidence-based explanations.
+
+### Diagnostics and Maintenance
+
+Failure correlation, recovery planning, codebase mapping, dependency analysis, isolated builds, test execution, and reviewable maintenance proposals.
+
+---
+
+## System Architecture
 
 ```text
 User
@@ -163,31 +159,28 @@ User
 Text, Voice, and Graphical Interfaces
   |
   v
-System AI Runtime
-  |- Conversation
-  |- System Understanding
-  |- Goal Planning
-  |- Diagnostics
-  |- Codebase Maintenance
+NovaCortex AI
+  |- Learning and Inference
+  |- System Understanding and Memory
+  |- Goal Reasoning and Planning
+  |- Conversation and Explanation
+  |- Diagnostics and Codebase Maintenance
   |
   v
 AI Control and Safety Layer
   |- Capability Registry
-  |- Permission Checks
-  |- Policy Validation
-  |- Action Audit
-  |- Verification and Rollback
+  |- Permission and Policy Engine
+  |- Risk Classification and Approval
+  |- Audit, Verification, and Rollback
   |
   v
-NovaCortex OS System Services
-  |- Application Management
-  |- File and Storage Management
-  |- Process and Service Management
-  |- Device and Settings Management
-  |- Desktop and Shell
+NovaCortex OS Services
+  |- Applications, Files, Processes, and Sessions
+  |- Devices, Networking, Settings, and Updates
+  |- Desktop, Shell, Notifications, and Recovery
   |
   v
-NovaKernel System Interface
+NovaKernel Integration Layer
   |
   v
 NovaKernel
@@ -196,105 +189,77 @@ NovaKernel
 Hardware
 ```
 
-### Core Principle
-
-> The AI understands, plans, coordinates, and explains. NovaKernel validates and executes low-level operations.
-
 ---
 
-## AI Action Lifecycle
+## Safety Principles
 
-Every system action follows a controlled lifecycle:
-
-```text
-Observe -> Understand -> Plan -> Authorize -> Execute -> Verify -> Explain
-```
-
-1. **Observe:** Collect relevant system state through documented interfaces.
-2. **Understand:** Identify the current condition, goal, constraints, and risks.
-3. **Plan:** Produce an ordered set of system actions.
-4. **Authorize:** Check permissions, policies, and required user approval.
-5. **Execute:** Perform actions through NovaCortex OS services and NovaKernel interfaces.
-6. **Verify:** Confirm that the intended result was achieved.
-7. **Explain:** Report actions, outcomes, failures, and recovery information.
-
----
-
-## Safety Model
-
-NovaCortex OS treats AI output as a proposed action, not as trusted kernel authority.
-
-- The AI has no unrestricted access to kernel memory or hardware.
-- Privileged operations pass through capability and policy checks.
-- Destructive actions require explicit authorization unless covered by a user-defined policy.
-- Security-sensitive operations are recorded in an audit trail.
-- Reversible actions use checkpoints or rollback information where possible.
-- AI failures are isolated from the kernel and critical system services.
-- NovaCortex OS remains operable in a deterministic safe mode when the AI is unavailable.
-- Users can inspect, interrupt, limit, or disable AI-controlled operations.
-
----
-
-## What Makes NovaCortex OS Different
-
-- **AI-native architecture:** AI is a system-level coordination layer, not an optional chatbot.
-- **Goal-based operation:** Users describe outcomes instead of manually performing every step.
-- **System-wide understanding:** The AI uses structured knowledge of services, files, processes, devices, policies, and code.
-- **Continuous explanation:** The AI reports what the OS is doing and why.
-- **Safe autonomy:** Actions are permission-controlled, validated, audited, and verified.
-- **AI-assisted maintenance:** The AI helps understand, test, and maintain the operating system codebase.
-- **Independent kernel:** NovaKernel provides a clean, deterministic, AI-aware kernel foundation.
-- **Built from scratch:** NovaCortex OS and NovaKernel are original open-source systems, not a Linux distribution or desktop wrapper.
+- The AI has no unrestricted access to kernel memory, hardware, credentials, or user data
+- Every system operation is represented as a typed, inspectable action
+- Privileged actions pass through capability and policy checks
+- Destructive and security-critical actions require explicit authorization
+- Sensitive operations produce tamper-evident audit records
+- Reversible operations use checkpoints or rollback data where possible
+- Users can inspect, interrupt, limit, or disable AI-controlled work
+- AI failures are isolated from the kernel and critical services
+- The OS provides deterministic manual and safe-mode operation
+- AI-proposed code changes are built and tested in isolation
+- Trusted system components cannot be silently replaced by the AI
 
 ---
 
 ## Repository Scope
 
-This repository owns the complete NovaCortex OS user-space system and final OS integration.
-
 ### In Scope
 
-- AI runtime and reasoning infrastructure
-- Conversation and interaction systems
-- System state and capability models
-- Goal planner and action engine
-- Permission and policy coordination
-- System services and service manager
-- Desktop environment and system shell
-- Core applications and settings
-- Diagnostics and recovery workflows
-- Codebase understanding and maintenance tools
-- NovaKernel integration contracts
-- OS image construction and release tooling
-- Integration, security, and end-to-end tests
-- Developer and contributor documentation
+- From-scratch AI research, architecture, training, inference, and evaluation
+- Training-data governance and reproducible dataset pipelines
+- Conversation, memory, system understanding, reasoning, and planning
+- Capability registry, action engine, policy, audit, and recovery
+- User-space runtime, init, services, sessions, and configuration
+- Desktop environment, shell, applications, and developer SDK
+- Diagnostics and codebase-maintenance systems
+- NovaKernel integration contracts and compatibility tests
+- Bootable OS images, updates, releases, and end-to-end tests
+- Architecture, security, research, and contributor documentation
 
 ### Out of Scope
 
-- Kernel implementation
-- Interrupt and exception mechanisms
-- Kernel memory management
-- Kernel scheduler implementation
-- Kernel-level hardware drivers
-- Kernel networking and filesystem internals
+- NovaKernel implementation
+- Kernel scheduler, memory manager, drivers, interrupts, networking, or filesystem internals
 - Direct AI inference inside critical kernel execution paths
+- Proprietary or cloud-hosted AI as system intelligence
+- Pretrained third-party models or checkpoints as core or fallback intelligence
+- Silent autonomous deployment of changes to trusted components
 
-These components belong in the [NovaKernel repository](https://github.com/dev-collaboration-hub/NovaKernel).
+Kernel work belongs in the [NovaKernel repository](https://github.com/dev-collaboration-hub/NovaKernel).
 
 ---
 
-## Planned Project Structure
+## Planned Repository Structure
 
 ```text
 NovaCortex-OS/
-|
 ├── ai/
-│   ├── conversation/
+│   ├── architecture/
+│   ├── representations/
+│   ├── learning/
+│   ├── inference/
+│   ├── memory/
 │   ├── understanding/
 │   ├── planning/
-│   ├── actions/
+│   ├── conversation/
 │   ├── diagnostics/
 │   └── maintenance/
+├── data/
+│   ├── specifications/
+│   ├── pipelines/
+│   ├── provenance/
+│   └── validation/
+├── training/
+│   ├── experiments/
+│   ├── checkpoints/
+│   ├── evaluation/
+│   └── reproducibility/
 ├── control/
 │   ├── capabilities/
 │   ├── permissions/
@@ -302,23 +267,17 @@ NovaCortex-OS/
 │   ├── audit/
 │   └── recovery/
 ├── system/
+│   ├── runtime/
 │   ├── init/
 │   ├── services/
 │   ├── session/
 │   └── configuration/
 ├── services/
-│   ├── applications/
-│   ├── files/
-│   ├── processes/
-│   ├── devices/
-│   ├── networking/
-│   └── updates/
 ├── shell/
 ├── desktop/
 ├── apps/
 ├── sdk/
-├── integration/
-│   └── novakernel/
+├── integration/novakernel/
 ├── image/
 ├── tests/
 ├── tools/
@@ -326,114 +285,61 @@ NovaCortex-OS/
 └── scripts/
 ```
 
-The structure will evolve through architecture reviews and milestone implementation.
+The structure will evolve through architecture decision records and milestone reviews.
 
 ---
 
-## Development Roadmap
+## Development Strategy
 
-### Stage 1 — System Architecture
+Development is organized around evidence-based gates:
 
-- Define NovaCortex OS responsibilities and boundaries
-- Define the NovaKernel integration contract
-- Define the user-space process and service model
-- Define AI permissions, policies, audit, and recovery rules
+1. Define project boundaries, safety invariants, and the NovaKernel contract.
+2. Boot a deterministic minimal user space before introducing AI control.
+3. Build structured system state, capabilities, permissions, audit, and recovery.
+4. Establish reproducible data, training, and evaluation infrastructure.
+5. Train the first project-owned model from project-owned initial weights.
+6. Add memory, system understanding, conversation, and constrained planning.
+7. Expand AI-controlled operations only after safety and correctness evaluations pass.
+8. Build the desktop, application platform, diagnostics, and maintenance intelligence.
+9. Integrate, harden, test, and release the complete OS.
 
-### Stage 2 — Minimal User Space
-
-- Create the initial user-space runtime
-- Implement system initialization
-- Establish system call wrappers
-- Launch the first NovaCortex OS process on NovaKernel
-
-### Stage 3 — Core System Services
-
-- Service manager
-- Process and session services
-- File and storage services
-- Device and settings services
-- Application lifecycle management
-
-### Stage 4 — System AI Foundation
-
-- System state model
-- Capability registry
-- Event and telemetry ingestion
-- Goal representation
-- Task planner
-- Action execution framework
-
-### Stage 5 — Conversational Interface
-
-- Text interaction
-- Voice interaction
-- Action narration
-- Progress reporting
-- Clarification and confirmation handling
-
-### Stage 6 — AI-Controlled OS Operations
-
-- File and application operations
-- Process and service coordination
-- Device and settings management
-- Resource and performance optimization
-- Multi-step goal execution
-
-### Stage 7 — Desktop Environment
-
-- Window and session environment
-- System shell
-- Core graphical applications
-- AI activity and permission interface
-- Diagnostics and recovery interface
-
-### Stage 8 — Maintenance Intelligence
-
-- Codebase mapping
-- Dependency and interface analysis
-- Build and test automation
-- Failure localization
-- Reviewable maintenance proposals
-- Safe update and rollback workflow
-
-### Stage 9 — Complete System Integration
-
-- NovaKernel release integration
-- Bootable image construction
-- Hardware and virtual-machine testing
-- Security and recovery validation
-- Performance optimization
-- Developer preview release
+No milestone is complete only because a demo works. Each milestone requires documented interfaces, tests, failure behaviour, and acceptance evidence.
 
 ---
 
-## Current Status
+## Documentation
 
-NovaCortex OS is currently in the planning and architecture stage.
+- [Detailed Documentation Roadmap](docs/documentation-roadmap.md)
+- [Engineering Milestones](docs/milestones.md)
 
-The initial work will focus on:
+The roadmap defines what must be specified. The milestones define the order in which validated system capabilities will be delivered.
 
-1. Defining the boundary between NovaCortex OS and NovaKernel.
-2. Designing the AI control and safety model.
-3. Establishing the minimal user-space architecture.
-4. Creating a bootable integration path using NovaKernel.
+---
 
-The project is not yet ready for production use.
+## Immediate Priorities
+
+1. Approve the project vision, scope, terminology, and non-goals.
+2. Define the NovaCortex OS–NovaKernel integration contract.
+3. Define the from-scratch AI research charter and reproducibility rules.
+4. Define the permission, action, audit, verification, rollback, and safe-mode models.
+5. Design the minimal deterministic user-space runtime.
+6. Establish measurable acceptance criteria for the first AI learning experiments.
 
 ---
 
 ## Contributing
 
-NovaCortex OS is a long-term open-source engineering project. Contributors can participate in operating systems, AI systems, security, user interfaces, developer tooling, testing, and technical documentation.
+NovaCortex OS welcomes contributors in operating systems, machine learning research, security, compilers, user interfaces, developer tooling, testing, data governance, and technical documentation.
 
-Before starting:
+Before contributing:
 
-1. Read the architecture and scope documentation.
+1. Read the scope, roadmap, and relevant architecture documents.
 2. Check open issues and active milestones.
-3. Discuss major architectural changes before implementation.
-4. Keep kernel changes in the NovaKernel repository.
-5. Include tests and documentation with every system-level contribution.
-6. Preserve permission, audit, verification, and recovery guarantees.
+3. Discuss major architectural or research changes before implementation.
+4. Keep kernel implementation in NovaKernel.
+5. Do not introduce pretrained models or external AI-service dependencies.
+6. Include tests, evaluation results, and documentation with system-level changes.
+7. Preserve permission, audit, verification, recovery, and reproducibility guarantees.
 
 ---
 
