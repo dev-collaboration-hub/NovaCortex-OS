@@ -1,14 +1,24 @@
 # NovaCortex OS — Detailed Documentation Roadmap
 
-This roadmap defines the documentation required to design and implement NovaCortex OS as a complete AI-native operating system.
+This roadmap defines the documents required to design, build, validate, and maintain NovaCortex OS as a complete AI-native operating system with a project-owned AI built from scratch.
 
-Documentation will be organized around real system modules, interfaces, and implementation boundaries. NovaKernel internals will not be duplicated in this repository. NovaCortex OS will document only the contracts required to integrate with NovaKernel.
+NovaKernel internals are not duplicated here. This repository documents only the contracts by which NovaCortex OS uses NovaKernel.
+
+## Non-Negotiable Documentation Rules
+
+Every relevant document must preserve these rules:
+
+1. The central AI is designed, trained, evaluated, and versioned by the project.
+2. No cloud AI API, pretrained model, or externally trained checkpoint provides core or fallback intelligence.
+3. General non-AI tooling may be used only as documented implementation infrastructure.
+4. AI output is a proposal to the control layer, never kernel authority.
+5. System actions are typed, permission-checked, auditable, interruptible, and verifiable.
+6. The OS remains operable through deterministic manual and safe-mode paths.
+7. NovaKernel is developed separately and consumed through a versioned contract.
 
 ---
 
-## D0 — Project Definition
-
-Defines the project's purpose, responsibilities, and boundaries.
+## D0 — Vision, Scope, and Terminology
 
 ### Documents
 
@@ -18,109 +28,92 @@ Defines the project's purpose, responsibilities, and boundaries.
 - `non-goals.md`
 - `terminology.md`
 - `novacortex-vs-novakernel.md`
+- `definition-of-usable-system.md`
 
 ### Required Decisions
 
-- What NovaCortex OS will build
-- What NovaKernel will handle
-- The authority assigned to the system AI
-- Components owned by this repository
-- Components excluded from this repository
-- The relationship between the complete OS and its kernel
-- The minimum definition of a usable NovaCortex OS system
+- Product vision and measurable goals
+- NovaCortex OS and NovaKernel ownership boundaries
+- Meaning of AI-native, autonomous, from scratch, safe mode, and system understanding
+- Minimum usable system and minimum developer preview
+- Explicit non-goals and prohibited dependencies
 
-### Completion Criteria
+### Exit Criteria
 
-- NovaCortex OS and NovaKernel responsibilities do not overlap
-- System AI authority and restrictions are explicit
-- Project goals and non-goals are testable
-- All major terms have consistent definitions
+- Responsibilities do not overlap
+- Goals and non-goals are testable
+- From-scratch AI requirements are unambiguous
+- Major terms have one approved definition
 
 ---
 
-## D1 — Complete System Architecture
-
-Defines the complete operating system as a set of connected layers and modules.
+## D1 — System Architecture and Trust Boundaries
 
 ### Documents
 
 - `system-architecture.md`
 - `layered-architecture.md`
 - `component-map.md`
+- `runtime-dependency-graph.md`
 - `system-data-flow.md`
 - `boot-to-ai-lifecycle.md`
-- `runtime-dependency-graph.md`
-
-### Architecture Layers
-
-1. User interfaces
-2. System AI runtime
-3. AI control and safety layer
-4. Core system services
-5. NovaKernel integration layer
-6. NovaKernel
-7. Hardware
+- `trust-boundaries.md`
+- `failure-propagation.md`
 
 ### Required Decisions
 
-- Ownership of every system component
-- Allowed communication paths between layers
-- Trusted and untrusted execution boundaries
-- Startup order and failure dependencies
-- Data flow between the AI, system services, and kernel
-- Interfaces that must remain stable across releases
+- Ownership and allowed communication paths for every layer
+- Startup, shutdown, degradation, and recovery order
+- Trusted, privileged, isolated, and untrusted components
+- Stable interfaces and versioning rules
+- Behaviour before the AI starts and after it fails
 
-### Completion Criteria
+### Exit Criteria
 
-- Every planned module belongs to one architecture layer
-- No module bypasses the safety and permission boundaries
-- System startup and shutdown flows are documented
-- Critical dependencies and failure propagation paths are identified
+- Every component belongs to one layer
+- No path bypasses permission and policy enforcement
+- Boot and shutdown are deterministic
+- Critical failure paths have defined containment
 
 ---
 
 ## D2 — NovaKernel Integration
-
-Defines the exact contract between NovaCortex OS and NovaKernel.
 
 ### Documents
 
 - `kernel-integration-overview.md`
 - `kernel-interface-contract.md`
 - `system-call-dependencies.md`
+- `kernel-capability-contract.md`
 - `kernel-telemetry-contract.md`
-- `ai-action-request-protocol.md`
 - `kernel-event-format.md`
+- `ai-action-request-protocol.md`
 - `version-compatibility.md`
 - `kernel-failure-handling.md`
 
 ### Required Decisions
 
-- Required system calls
-- Kernel telemetry exposed to user space
-- Kernel event types and delivery guarantees
-- AI action request and response formats
-- Permission enforcement responsibilities
-- NovaKernel version compatibility rules
-- Behaviour when NovaKernel features are unavailable
-- Kernel communication timeouts and failure handling
+- Required system calls, capabilities, events, and telemetry
+- Request, response, timeout, cancellation, and error formats
+- Permission-enforcement ownership
+- Version negotiation and compatibility
+- Behaviour when a kernel capability is missing
+- Test doubles and contract-test strategy
 
 ### Boundary Rule
 
-This documentation describes how NovaCortex OS uses NovaKernel. It must not duplicate NovaKernel's internal scheduler, memory manager, drivers, filesystem internals, networking internals, or interrupt mechanisms.
+These documents describe the public integration contract. They must not reproduce NovaKernel scheduler, memory, driver, interrupt, networking, or filesystem implementations.
 
-### Completion Criteria
+### Exit Criteria
 
-- All kernel dependencies are explicit
 - Every privileged operation has an authorization path
-- Interface versions and compatibility rules are defined
-- Integration failures have deterministic fallback behaviour
+- Every dependency is versioned and testable
+- Failure and fallback behaviour is deterministic
+- NovaKernel can evolve without undocumented coupling
 
 ---
 
-## D3 — User-Space Foundation
-
-Defines the first NovaCortex OS environment that starts after the kernel becomes operational.
+## D3 — Deterministic User-Space Foundation
 
 ### Documents
 
@@ -132,29 +125,325 @@ Defines the first NovaCortex OS environment that starts after the kernel becomes
 - `session-management.md`
 - `configuration-system.md`
 - `shutdown-and-restart.md`
+- `manual-operation-mode.md`
 
 ### Required Decisions
 
-- First user-space process
-- System initialization sequence
-- Service registration and dependency resolution
-- Inter-process communication mechanisms
-- User and system session lifecycles
-- Configuration ownership and storage
-- Graceful shutdown and forced recovery behaviour
+- First user-space process and startup sequence
+- Service registration, dependencies, supervision, and restart policy
+- IPC transport and message schemas
+- Session and configuration ownership
+- Manual operation without the AI
+- Graceful shutdown and forced recovery
 
-### Completion Criteria
+### Exit Criteria
 
-- NovaCortex OS can describe its complete user-space lifecycle
-- Service startup order is deterministic
-- IPC boundaries and message formats are defined
-- System shutdown cannot leave undefined service state
+- A minimal user space boots on NovaKernel
+- Services start and stop deterministically
+- IPC contracts are versioned
+- The base OS remains usable without AI
 
 ---
 
-## D4 — Core System Services
+## D4 — Capability, Permission, Policy, and Audit Model
 
-Defines every major operating system service as an independent module.
+### Documents
+
+- `capability-security.md`
+- `permission-model.md`
+- `policy-engine.md`
+- `action-risk-classification.md`
+- `authorization-flow.md`
+- `user-approval-system.md`
+- `audit-log.md`
+- `action-interruption.md`
+- `rollback-model.md`
+- `safe-mode.md`
+
+### Required Decisions
+
+- Capability issuance, scope, delegation, expiry, and revocation
+- Read-only, reversible, privileged, destructive, and security-critical risk levels
+- Policy precedence and user approval rules
+- Audit integrity, redaction, and retention
+- Emergency interruption and rollback eligibility
+- Safe-mode capabilities and restrictions
+
+### Exit Criteria
+
+- The AI has no ambient kernel or hardware authority
+- Destructive operations cannot bypass approval
+- Sensitive operations are auditable
+- Actions can be interrupted and the OS can enter safe mode
+
+---
+
+## D5 — Structured System State and Capability Graph
+
+### Documents
+
+- `system-state-model.md`
+- `resource-graph.md`
+- `capability-registry.md`
+- `system-event-model.md`
+- `application-capability-model.md`
+- `device-capability-model.md`
+- `system-context-store.md`
+- `state-synchronization.md`
+- `sensitive-data-filtering.md`
+
+### Required Decisions
+
+- Identity and relationships for files, processes, services, devices, applications, and users
+- Capability discovery and schema evolution
+- Event ordering, retention, provenance, and replay
+- Current versus historical state
+- Stale-state detection and repair
+- Information visible to each AI subsystem
+
+### Exit Criteria
+
+- AI operation does not depend on parsing unstructured terminal output
+- Every controllable component exposes typed capabilities
+- State changes generate structured events
+- Stale or unauthorized context is detectable
+
+---
+
+## D6 — From-Scratch AI Research Charter
+
+### Documents
+
+- `ai-research-charter.md`
+- `from-scratch-definition.md`
+- `ai-non-dependency-policy.md`
+- `research-objectives.md`
+- `baseline-strategy.md`
+- `experiment-governance.md`
+- `reproducibility-policy.md`
+- `model-versioning.md`
+- `responsible-research.md`
+
+### Required Decisions
+
+- What must be original and project-owned
+- Prohibited models, checkpoints, APIs, and fallback paths
+- Allowed non-AI research and engineering tools
+- Initial capability targets and measurable baselines
+- Experiment metadata, seed, environment, and artifact requirements
+- Model identity, lineage, compatibility, and retirement
+- Publication and review standards
+
+### Exit Criteria
+
+- A contributor can determine whether a dependency violates the scratch-built rule
+- Every experiment can be reproduced from recorded inputs
+- Model lineage begins with project-owned architecture and initialization
+- Research claims require recorded evaluation evidence
+
+---
+
+## D7 — Data, Representation, and Tokenization
+
+### Documents
+
+- `data-governance.md`
+- `dataset-specification.md`
+- `data-provenance.md`
+- `licensing-and-consent.md`
+- `collection-and-generation.md`
+- `filtering-and-deduplication.md`
+- `system-action-corpus.md`
+- `representation-design.md`
+- `tokenizer-design.md`
+- `train-validation-test-splits.md`
+- `data-versioning.md`
+
+### Required Decisions
+
+- Permitted sources and licenses
+- Collection, synthetic generation, filtering, and removal procedures
+- Privacy, secret, and personal-data handling
+- Language, system-state, action, code, and conversation representations
+- Tokenizer or alternative representation training
+- Leakage prevention and immutable evaluation sets
+- Dataset versioning and reproducibility
+
+### Exit Criteria
+
+- Every training item has traceable provenance
+- The first representation system is trained or constructed by the project
+- Evaluation data is isolated from training
+- Dataset builds are repeatable and policy-compliant
+
+---
+
+## D8 — Training and Experiment Infrastructure
+
+### Documents
+
+- `training-architecture.md`
+- `optimization-strategy.md`
+- `distributed-training.md`
+- `checkpoint-format.md`
+- `experiment-tracking.md`
+- `resource-budgeting.md`
+- `determinism-and-seeding.md`
+- `failure-recovery.md`
+- `artifact-integrity.md`
+- `training-security.md`
+
+### Required Decisions
+
+- Training stages, objectives, optimizers, schedules, and stopping rules
+- Hardware abstraction and scaling strategy
+- Checkpoint content, integrity, and compatibility
+- Resource budgets and experiment approval
+- Reproducibility requirements
+- Failure recovery and corrupted-artifact detection
+
+### Exit Criteria
+
+- A small model can be trained from project-owned initial weights
+- A run produces traceable data, configuration, metrics, and artifacts
+- Interrupted runs recover without ambiguous lineage
+- Checkpoints are integrity-checked and versioned
+
+---
+
+## D9 — Core Model and Inference Runtime
+
+### Documents
+
+- `model-architecture.md`
+- `learning-objectives.md`
+- `parameter-initialization.md`
+- `inference-runtime.md`
+- `context-engine.md`
+- `confidence-and-uncertainty.md`
+- `resource-limits.md`
+- `runtime-lifecycle.md`
+- `model-loading-and-rollback.md`
+- `ai-failure-isolation.md`
+
+### Required Decisions
+
+- Architecture, parameterization, initialization, and learning objectives
+- Training and inference numerical formats
+- Context limits and resource budgets
+- Confidence and uncertainty representation
+- Model loading, compatibility, update, rollback, and quarantine
+- Behaviour when inference is unavailable or incorrect
+
+### Exit Criteria
+
+- The first project-trained model runs locally
+- Its architecture, weights, data version, and evaluation are traceable
+- Runtime failure cannot crash NovaKernel or critical services
+- Model updates can be rejected or rolled back
+
+---
+
+## D10 — Memory and System Understanding
+
+### Documents
+
+- `system-perception.md`
+- `context-assembly.md`
+- `short-term-memory.md`
+- `persistent-memory.md`
+- `memory-provenance.md`
+- `memory-permissions.md`
+- `memory-retention-and-deletion.md`
+- `goal-understanding.md`
+- `state-grounding.md`
+- `uncertainty-resolution.md`
+
+### Required Decisions
+
+- How structured state becomes model context
+- Short-term and persistent memory formats
+- Provenance, ownership, expiry, correction, and deletion
+- Goal, constraint, and ambiguity representation
+- Grounding and stale-context checks
+- Clarification thresholds
+
+### Exit Criteria
+
+- The AI can answer bounded questions about current system state
+- Memory cannot bypass data permissions
+- Claims about the machine cite current structured evidence
+- Stale, conflicting, and uncertain context is surfaced
+
+---
+
+## D11 — Goal Planner and Action Engine
+
+### Documents
+
+- `goal-representation.md`
+- `task-planner.md`
+- `task-graph.md`
+- `action-schema.md`
+- `action-executor.md`
+- `preconditions-and-postconditions.md`
+- `result-verification.md`
+- `failure-replanning.md`
+- `task-cancellation.md`
+- `multi-step-execution.md`
+
+### Required Decisions
+
+- Goal decomposition and task ordering
+- Typed actions and capability bindings
+- Preconditions, postconditions, and evidence
+- Authorization checkpoints
+- Execution state machine
+- Cancellation, compensation, rollback, and replanning limits
+
+### Exit Criteria
+
+- Every action has explicit inputs, permissions, risk, and expected results
+- Multi-step tasks can be inspected and interrupted
+- Failed actions cannot be reported as successful
+- Goal completion is verified against actual state
+
+---
+
+## D12 — Conversation, Voice, and Explanation
+
+### Documents
+
+- `conversation-engine.md`
+- `text-interface.md`
+- `voice-pipeline.md`
+- `conversation-state.md`
+- `intent-clarification.md`
+- `confirmation-system.md`
+- `action-narration.md`
+- `progress-reporting.md`
+- `error-and-uncertainty-explanation.md`
+- `sensitive-information-redaction.md`
+
+### Required Decisions
+
+- Project-owned language and voice components
+- Conversation lifecycle and state
+- Clarification and confirmation rules
+- Progress-event representation
+- Explanation evidence and detail levels
+- Redaction and accessibility requirements
+
+### Exit Criteria
+
+- The AI can hold a bounded local conversation without an external AI service
+- Narration matches real execution state
+- Required confirmations cannot be skipped
+- Errors and uncertainty include actionable recovery information
+
+---
+
+## D13 — Core System Services
 
 ### Documents
 
@@ -169,230 +458,25 @@ Defines every major operating system service as an independent module.
 - `notification-service.md`
 - `identity-and-user-service.md`
 
-### Required Content for Each Service
+### Required Content for Every Service
 
-- Service responsibilities
-- Public interfaces
-- Inputs and outputs
-- Internal state
-- Dependencies
-- Required kernel capabilities
-- Permission requirements
-- Startup and shutdown behaviour
-- Failure and recovery behaviour
-- Testing requirements
+- Responsibilities and non-responsibilities
+- Typed public interfaces
+- State, dependencies, and lifecycle
+- Kernel capabilities and permissions
+- Failure, recovery, and safe-mode behaviour
+- Test and acceptance requirements
 
-### Completion Criteria
+### Exit Criteria
 
-- Each service has one clear owner and responsibility
+- Each service has one clear owner
 - Cross-service dependencies are documented
-- Services expose structured operations to the system AI
-- Failures remain isolated wherever possible
+- AI-accessible operations use typed capabilities
+- Service failures remain contained
 
 ---
 
-## D5 — System Understanding Model
-
-Defines the structured representation through which the AI understands the operating system.
-
-### Documents
-
-- `system-state-model.md`
-- `capability-registry.md`
-- `system-event-model.md`
-- `resource-graph.md`
-- `application-capability-model.md`
-- `device-capability-model.md`
-- `system-context-store.md`
-- `state-synchronization.md`
-
-### Required Decisions
-
-- Representation of processes, files, applications, devices, and services
-- System resource relationships
-- Capability registration and discovery
-- Event identity, ordering, and retention
-- Current-state versus historical-state storage
-- Stale-state detection and synchronization
-- Information visible to the AI
-- Sensitive information filtering
-
-### Completion Criteria
-
-- The AI does not depend on unstructured command output
-- Every controllable system component exposes capabilities
-- State changes generate structured events
-- The system can detect and repair stale AI context
-
----
-
-## D6 — System AI Runtime
-
-Defines the architecture of the operating system's central AI.
-
-### Documents
-
-- `ai-runtime-architecture.md`
-- `context-engine.md`
-- `system-perception.md`
-- `goal-understanding.md`
-- `reasoning-boundaries.md`
-- `decision-model.md`
-- `confidence-model.md`
-- `memory-and-context.md`
-- `ai-runtime-lifecycle.md`
-- `ai-failure-isolation.md`
-
-### Required Decisions
-
-- AI runtime components and responsibilities
-- Input sources and context assembly
-- Goal interpretation format
-- Decision and confidence representation
-- Short-term and persistent context
-- Allowed reasoning inputs
-- Resource and execution limits
-- Behaviour when the AI is unavailable or incorrect
-
-### Completion Criteria
-
-- AI runtime failure cannot crash the kernel
-- System operation remains possible without the AI
-- AI decisions are represented in an inspectable format
-- Confidence and uncertainty affect authorization behaviour
-
----
-
-## D7 — Goal Planner and Action Engine
-
-Defines how user goals are converted into verified operating system operations.
-
-### Documents
-
-- `goal-representation.md`
-- `task-planner.md`
-- `task-graph.md`
-- `action-schema.md`
-- `action-executor.md`
-- `dependency-resolution.md`
-- `result-verification.md`
-- `failure-replanning.md`
-- `task-cancellation.md`
-- `multi-step-execution.md`
-
-### Action Lifecycle
-
-```text
-Observe -> Understand -> Plan -> Authorize -> Execute -> Verify -> Explain
-```
-
-### Required Decisions
-
-- Goal and constraint representation
-- Task decomposition rules
-- Action dependency ordering
-- Preconditions and postconditions
-- Authorization checkpoints
-- Execution state machine
-- Result verification rules
-- Cancellation and rollback behaviour
-- Failure recovery and replanning limits
-
-### Completion Criteria
-
-- Every action has defined inputs, permissions, and expected results
-- Multi-step tasks can be interrupted safely
-- Failed actions cannot be reported as successful
-- Final goal completion is verified rather than assumed
-
----
-
-## D8 — Conversation and Explanation System
-
-Defines how the AI communicates with users and explains system activity.
-
-### Documents
-
-- `conversation-engine.md`
-- `text-interface.md`
-- `voice-interface.md`
-- `intent-clarification.md`
-- `confirmation-system.md`
-- `action-narration.md`
-- `progress-reporting.md`
-- `error-explanation.md`
-- `conversation-state.md`
-
-### Required Decisions
-
-- Text and voice message formats
-- Conversation state lifecycle
-- Clarification rules
-- Confirmation requirements
-- Progress event representation
-- Action explanation depth
-- Error and uncertainty communication
-- Sensitive information redaction
-
-### Completion Criteria
-
-- The AI explains what it is doing and why
-- Required confirmations cannot be skipped
-- Progress reports reflect actual execution state
-- Errors are reported with actionable recovery information
-
----
-
-## D9 — Permissions and Safety
-
-Defines how AI-controlled operations are restricted, authorized, recorded, and recovered.
-
-### Documents
-
-- `permission-model.md`
-- `capability-security.md`
-- `policy-engine.md`
-- `action-risk-classification.md`
-- `authorization-flow.md`
-- `user-approval-system.md`
-- `audit-log.md`
-- `action-interruption.md`
-- `rollback-model.md`
-- `safe-mode.md`
-
-### Action Risk Levels
-
-- Read-only
-- Reversible
-- Privileged
-- Destructive
-- Security-critical
-
-### Required Decisions
-
-- Permission ownership
-- Capability issuance and revocation
-- Risk classification rules
-- User approval requirements
-- Policy precedence
-- Audit record format and retention
-- Emergency interruption behaviour
-- Rollback eligibility
-- Safe-mode capabilities and restrictions
-
-### Completion Criteria
-
-- The AI has no unrestricted kernel or hardware access
-- Destructive actions require explicit authorization
-- Security-sensitive operations are auditable
-- AI-controlled operations can be interrupted
-- The OS remains usable in safe mode
-
----
-
-## D10 — Desktop, Shell, and Applications
-
-Defines the complete graphical operating environment.
+## D14 — Desktop, Shell, Applications, and SDK
 
 ### Documents
 
@@ -401,35 +485,30 @@ Defines the complete graphical operating environment.
 - `window-management.md`
 - `application-model.md`
 - `application-lifecycle.md`
+- `application-sdk.md`
 - `settings-interface.md`
 - `ai-activity-center.md`
 - `permission-interface.md`
-- `notification-interface.md`
 - `accessibility.md`
 
 ### Required Decisions
 
-- Desktop and shell responsibilities
-- Application packaging and lifecycle
-- Window and session behaviour
-- AI interaction surfaces
-- User-visible permission prompts
-- AI activity history
-- Notification priority and delivery
-- Accessibility requirements
+- Desktop, shell, compositor, and session ownership
+- Application packaging, isolation, lifecycle, and capability declaration
+- AI interaction surfaces and activity history
+- Permission, interruption, and recovery interfaces
+- Developer SDK compatibility and security
 
-### Completion Criteria
+### Exit Criteria
 
-- Users can operate the OS with or without AI assistance
+- Users can operate the OS with or without AI
 - AI activity is visible and interruptible
-- Applications follow a documented lifecycle
-- Permission and recovery interfaces are accessible
+- Applications have a documented secure lifecycle
+- Third-party applications can expose safe capabilities
 
 ---
 
-## D11 — Diagnostics and Recovery
-
-Defines how the AI detects, diagnoses, explains, and recovers from system problems.
+## D15 — Diagnostics, Recovery, and Codebase Maintenance
 
 ### Documents
 
@@ -437,155 +516,105 @@ Defines how the AI detects, diagnoses, explains, and recovers from system proble
 - `diagnostic-engine.md`
 - `failure-correlation.md`
 - `recovery-orchestrator.md`
-- `service-recovery.md`
-- `crash-handling.md`
-- `checkpoint-system.md`
-- `rollback-system.md`
+- `checkpoint-and-rollback.md`
 - `safe-boot.md`
-- `recovery-interface.md`
-
-### Required Decisions
-
-- Health signal collection
-- Failure classification
-- Cross-component failure correlation
-- Automatic versus approved recovery
-- Restart and isolation rules
-- Checkpoint creation and retention
-- Rollback eligibility
-- Safe-boot activation
-- Recovery result verification
-
-### Completion Criteria
-
-- Recovery actions are risk-classified and auditable
-- Failed recovery does not hide the original failure
-- Critical services have deterministic fallback behaviour
-- Users receive clear recovery status and outcomes
-
----
-
-## D12 — AI Codebase Maintenance
-
-Defines how the AI understands and helps maintain the NovaCortex OS codebase.
-
-### Documents
-
 - `codebase-knowledge-model.md`
 - `module-dependency-graph.md`
-- `interface-analysis.md`
 - `change-impact-analysis.md`
 - `failure-localization.md`
-- `change-proposal-system.md`
-- `isolated-build-environment.md`
-- `automated-test-execution.md`
+- `isolated-build-and-test.md`
 - `maintenance-approval-flow.md`
-- `safe-update-deployment.md`
 
 ### Required Decisions
 
-- Codebase indexing and module representation
-- Dependency and interface tracking
-- Failure localization evidence
-- Change impact calculation
-- Patch proposal format
-- Isolated build and test requirements
-- Human review requirements
-- Trusted component update restrictions
-- Deployment and rollback rules
+- Health signals and failure classification
+- Automatic versus approved recovery
+- Evidence required for diagnosis
+- Codebase indexing and dependency tracking
+- Patch proposal and impact format
+- Isolation, review, deployment, and rollback rules
 
-### Safety Rule
+### Exit Criteria
 
-The AI may propose and test code changes, but it must not silently deploy changes to trusted system components.
-
-### Completion Criteria
-
-- Every proposed change includes evidence and affected modules
-- Code changes are built and tested in isolation
-- Critical changes require explicit approval
-- Failed updates can be rolled back safely
+- Recovery is risk-classified, auditable, and verified
+- Proposed code changes include evidence and affected modules
+- Changes are built and tested in isolation
+- Trusted components cannot be silently updated
 
 ---
 
-## D13 — Build and OS Image Integration
-
-Defines how NovaCortex OS and NovaKernel are combined into a bootable operating system.
+## D16 — Build, Image, Update, and Release Engineering
 
 ### Documents
 
 - `build-system.md`
 - `novakernel-import.md`
 - `userspace-build.md`
+- `model-artifact-integration.md`
 - `filesystem-image.md`
 - `bootable-image-assembly.md`
 - `qemu-testing.md`
 - `hardware-support-policy.md`
-- `debug-builds.md`
-- `release-builds.md`
+- `update-and-rollback.md`
+- `release-process.md`
 - `versioning.md`
+- `software-bill-of-materials.md`
 
 ### Required Decisions
 
-- Build stages and outputs
-- NovaKernel version pinning
-- User-space compilation and packaging
-- Filesystem image layout
-- Boot image construction
-- Debug and release build differences
-- Virtual-machine test process
-- Initial supported hardware
-- Release versioning and compatibility
+- Reproducible build stages and outputs
+- NovaKernel and AI model pinning
+- Filesystem and boot-image layouts
+- Debug, research, evaluation, and release profiles
+- Signed update, compatibility, rollback, and recovery rules
+- Initial virtual-machine and hardware targets
 
-### Completion Criteria
+### Exit Criteria
 
-- Builds are reproducible
-- NovaKernel versions are pinned and traceable
-- Bootable images can be tested automatically
-- Debug and release artifacts are clearly separated
+- Complete images are reproducible
+- Kernel, model, data, and user-space versions are traceable
+- Images boot in automated tests
+- Failed updates recover to a known-good system
 
 ---
 
-## D14 — Testing and Evaluation
-
-Defines validation requirements for every system layer.
+## D17 — Testing, AI Evaluation, Security, and Reliability
 
 ### Documents
 
 - `testing-strategy.md`
-- `unit-testing.md`
-- `service-integration-testing.md`
 - `kernel-contract-testing.md`
+- `service-integration-testing.md`
 - `end-to-end-testing.md`
+- `ai-capability-evaluation.md`
+- `planning-and-action-evaluation.md`
+- `conversation-evaluation.md`
+- `safety-evaluation.md`
 - `security-testing.md`
 - `failure-injection.md`
 - `recovery-testing.md`
-- `ai-behaviour-evaluation.md`
 - `performance-benchmarks.md`
+- `release-gates.md`
 
 ### Required Decisions
 
-- Testing levels and ownership
-- Required tests for each module type
-- NovaKernel contract validation
-- Security and permission test cases
-- AI behaviour evaluation criteria
-- Failure injection scenarios
-- Recovery success criteria
-- Performance budgets and benchmarks
-- Release-blocking failures
+- Test ownership and required levels
+- Immutable evaluation suites and contamination checks
+- AI correctness, grounding, uncertainty, and safety metrics
+- Action success, false-success, and unsafe-action rates
+- Adversarial, permission, privacy, and supply-chain tests
+- Performance budgets and release-blocking failures
 
-### Completion Criteria
+### Exit Criteria
 
-- Every module has defined acceptance tests
-- AI actions are evaluated for correctness and safety
-- Kernel integration is contract-tested
-- Recovery and safe mode are tested under failure conditions
+- Every module has acceptance tests
+- Model and planner releases pass versioned evaluation suites
+- Permission and recovery paths pass failure injection
+- Release evidence is published with limitations
 
 ---
 
-## D15 — Contributor Documentation
-
-Defines the workflow and standards for contributors.
+## D18 — Contributor, Research, and Governance Documentation
 
 ### Documents
 
@@ -593,80 +622,96 @@ Defines the workflow and standards for contributors.
 - `development-environment.md`
 - `repository-structure.md`
 - `coding-standards.md`
-- `contribution-workflow.md`
-- `issue-guidelines.md`
-- `pull-request-guidelines.md`
+- `research-contribution-guide.md`
+- `data-contribution-guide.md`
+- `issue-and-pull-request-guide.md`
 - `architecture-decision-records.md`
-- `security-guidelines.md`
+- `model-and-dataset-cards.md`
+- `security-policy.md`
+- `release-governance.md`
 - `glossary.md`
 
 ### Required Decisions
 
-- Supported development environments
-- Repository and module conventions
-- Coding and documentation standards
-- Issue and pull request workflow
-- Architecture review requirements
-- Security reporting process
-- Definition of done
-- Contributor testing responsibilities
+- Engineering and research review workflows
+- Data, model, code, and documentation contribution requirements
+- Architecture decision ownership
+- Security reporting and embargo handling
+- Model and dataset documentation standards
+- Definition of done and release authority
 
-### Completion Criteria
+### Exit Criteria
 
-- A new contributor can set up the project from documentation
-- Contribution and review requirements are explicit
-- Architecture decisions are recorded
-- Security-sensitive contributions follow a dedicated process
+- New contributors can reproduce the development environment
+- Research results have traceable evidence
+- Security-sensitive work follows a dedicated process
+- Architecture and release decisions are recorded
 
 ---
 
-## Standard Structure for Every Module Document
+## Standard Structure for Module Documents
 
-Every module document must include:
+Every system module document must include:
 
 1. Purpose
 2. Responsibilities
 3. Non-responsibilities
-4. Inputs and outputs
+4. Inputs, outputs, and schemas
 5. Public interfaces
 6. Internal components
 7. State and lifecycle
 8. Dependencies
 9. Permissions and security
-10. Failure handling
-11. Testing requirements
-12. Acceptance criteria
+10. Failure and recovery behaviour
+11. Observability
+12. Testing and evaluation
+13. Acceptance criteria
+14. Open questions
+
+Every AI research document must additionally record:
+
+1. Hypothesis
+2. Baseline
+3. Data and artifact versions
+4. Architecture and initialization
+5. Training or evaluation configuration
+6. Reproducibility environment
+7. Metrics and failure analysis
+8. Safety and limitation analysis
 
 ---
 
 ## Documentation Execution Order
 
-Documentation must be completed in this order:
+Documentation should proceed in dependency order:
 
-1. D0 — Project Definition
-2. D1 — Complete System Architecture
+1. D0 — Vision, Scope, and Terminology
+2. D1 — System Architecture and Trust Boundaries
 3. D2 — NovaKernel Integration
-4. D3 — User-Space Foundation
-5. D9 — Permissions and Safety
-6. D4 — Core System Services
-7. D5 — System Understanding Model
-8. D6 — System AI Runtime
-9. D7 — Goal Planner and Action Engine
-10. D8 — Conversation and Explanation System
-11. D10 — Desktop, Shell, and Applications
-12. D11 — Diagnostics and Recovery
-13. D12 — AI Codebase Maintenance
-14. D13 — Build and OS Image Integration
-15. D14 — Testing and Evaluation
-16. D15 — Contributor Documentation
+4. D3 — Deterministic User-Space Foundation
+5. D4 — Capability, Permission, Policy, and Audit Model
+6. D6 — From-Scratch AI Research Charter
+7. D5 — Structured System State and Capability Graph
+8. D7 — Data, Representation, and Tokenization
+9. D8 — Training and Experiment Infrastructure
+10. D9 — Core Model and Inference Runtime
+11. D10 — Memory and System Understanding
+12. D11 — Goal Planner and Action Engine
+13. D12 — Conversation, Voice, and Explanation
+14. D13 — Core System Services
+15. D14 — Desktop, Shell, Applications, and SDK
+16. D15 — Diagnostics, Recovery, and Codebase Maintenance
+17. D16 — Build, Image, Update, and Release Engineering
+18. D17 — Testing, AI Evaluation, Security, and Reliability
+19. D18 — Contributor, Research, and Governance Documentation
 
-Implementation should not begin until D0, D1, D2, D3, and the foundational permission model from D9 are approved.
+Implementation experiments may begin early, but no subsystem becomes a trusted OS component until its boundaries, safety rules, tests, and acceptance criteria are approved.
 
 ---
 
-## Immediate Next Step
+## Immediate Documentation Set
 
-Begin with **D0 — Project Definition** and create the following documents:
+The first approved documentation package should contain:
 
 1. `vision-and-scope.md`
 2. `system-responsibilities.md`
@@ -674,3 +719,7 @@ Begin with **D0 — Project Definition** and create the following documents:
 4. `non-goals.md`
 5. `terminology.md`
 6. `novacortex-vs-novakernel.md`
+7. `from-scratch-definition.md`
+8. `ai-non-dependency-policy.md`
+9. `trust-boundaries.md`
+10. `definition-of-usable-system.md`
